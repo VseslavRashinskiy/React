@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Modal from '@mui/material/Modal';
 import Card from '@mui/material/Card';
 import Box from '@mui/material/Box';
@@ -43,72 +43,54 @@ const style = {
   p: 4,
 };
 
-interface CardState {
-  open: boolean;
-}
+const CarCards = (props: CardCarsProps) => {
+  const [open, setOpen] = useState(false);
 
-class CarCards extends React.Component<CardCarsProps, CardState> {
-  constructor(props: CardCarsProps) {
-    super(props);
-    this.state = {
-      open: false,
-    };
-    this.handleOpen = this.handleOpen.bind(this);
-    this.handleClose = this.handleClose.bind(this);
+  function handleOpen() {
+    setOpen(true);
   }
 
-  handleOpen() {
-    this.setState({ open: true });
+  function handleClose() {
+    setOpen(false);
   }
 
-  handleClose() {
-    this.setState({ open: false });
-  }
-
-  render() {
-    return (
-      <div className="cards" data-testid="cards">
-        <Card sx={{ maxWidth: 400 }}>
-          <CardActionArea onClick={this.handleOpen}>
-            <CardMedia
-              component="img"
-              height="300"
-              image={this.props.item.image}
-              alt="green iguana"
-            />
-            <CardContent>
-              <Typography gutterBottom variant="h5" component="div">
-                {this.props.item.name}
+  return (
+    <div className="cards" data-testid="cards">
+      <Card sx={{ maxWidth: 400 }}>
+        <CardActionArea onClick={handleOpen}>
+          <CardMedia component="img" height="300" image={props.item.image} alt="green iguana" />
+          <CardContent>
+            <Typography gutterBottom variant="h5" component="div">
+              {props.item.name}
+            </Typography>
+          </CardContent>
+        </CardActionArea>
+        <Modal
+          open={open}
+          onClose={handleClose}
+          aria-labelledby="modal-modal-title"
+          aria-describedby="modal-modal-description"
+        >
+          <Box sx={style}>
+            <div className="modal-title">
+              <Typography id="modal-modal-title" variant="h6" component="h2">
+                {props.item.name}
               </Typography>
-            </CardContent>
-          </CardActionArea>
-          <Modal
-            open={this.state.open}
-            onClose={this.handleClose}
-            aria-labelledby="modal-modal-title"
-            aria-describedby="modal-modal-description"
-          >
-            <Box sx={style}>
-              <div className="modal-title">
-                <Typography id="modal-modal-title" variant="h6" component="h2">
-                  {this.props.item.name}
-                </Typography>
-                <IconButton aria-label="delete" onClick={this.handleClose}>
-                  <HighlightOffIcon />
-                </IconButton>
-              </div>
-              <img src={this.props.item.image} alt={this.props.item.name} />
-              <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-                The character {this.props.item.name} is a {this.props.item.gender} and is in a{' '}
-                {this.props.item.status} status. Possesses the race {this.props.item.species} and
-                reside in a place {this.props.item.location.name}.
-              </Typography>
-            </Box>
-          </Modal>
-        </Card>
-      </div>
-    );
-  }
-}
+              <IconButton aria-label="delete" onClick={handleClose}>
+                <HighlightOffIcon />
+              </IconButton>
+            </div>
+            <img src={props.item.image} alt={props.item.name} />
+            <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+              The character {props.item.name} is a {props.item.gender} and is in a{' '}
+              {props.item.status} status. Possesses the race {props.item.species} and reside in a
+              place {props.item.location.name}.
+            </Typography>
+          </Box>
+        </Modal>
+      </Card>
+    </div>
+  );
+};
 
 export default CarCards;
