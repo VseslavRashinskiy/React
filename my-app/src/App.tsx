@@ -1,5 +1,6 @@
-import { AboutUs } from 'components/AboutUs';
-import { Header } from 'components/Header';
+import { AboutUs } from 'components/AboutUs/AboutUs';
+import { Header } from 'components/Main/Header';
+import Forms from 'components/Form/Forms';
 import Main from 'components/Main/Home';
 import NotFound from 'components/NotFound';
 import React from 'react';
@@ -13,6 +14,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Main />} />
         <Route path="/about" element={<AboutUs />} />
+        <Route path="/form" element={<Forms />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </div>

@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-empty-interface */
 import React from 'react';
 import { SearchBar } from './Search';
 import STATE from '../constant/Cars';

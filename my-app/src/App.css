@@ -35,3 +35,49 @@ body{
     text-align: center;
     justify-content: center;
 }
+
+.form{
+    display: flex;
+    justify-content: center;
+    max-width: 500px;
+    width: 100%;
+}
+
+.forms{
+    display: flex;
+    flex-direction: column;
+    border: 4px outset #7B68EE;
+    border-radius: 5px;
+}
+
+label{
+    display: flex;
+    justify-content: space-between;
+}
+
+.container{
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
+
+@media screen and (max-width: 655px) {
+    .cards{
+        grid-template-columns: auto auto;
+    }
+}
+
+@media screen and (max-width: 400px) {
+    .cards{
+        grid-template-columns: auto;
+    }
+
+    .navigation{
+        flex-direction: column;
+    }
+
+    .cardVses{
+        max-width: 375px;
+        width: 100%;
+    }
+}
