@@ -1,0 +1,37 @@
+body{
+    background-color:#f8f9fa;
+}
+
+.navigation{
+    display: flex;
+    justify-content: center;
+    background-color: blanchedalmond;
+    margin-bottom: 15px;
+}
+
+.navigation a{
+    padding: 0 10px 0 15px;
+    text-decoration: none;
+    color: black;
+    font-size: 30px;
+    border: 4mm ridge rgba(54, 10, 100, .6);
+    margin: 0 auto;
+}
+
+.search{
+    display: flex;
+    justify-content: center;
+}
+
+.cardVses{
+    display: flex;
+    justify-content: center;
+}
+
+.cards{
+    display: grid;
+    grid-template-columns: auto auto auto;
+    padding: 10px;
+    text-align: center;
+    justify-content: center;
+}
