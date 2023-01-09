@@ -1,122 +1,156 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { SearchBar } from './Search';
-import STATE from '../constant/Cars';
 import CarCards from './CarsCard';
 import axios from 'axios';
+import { ContextMain } from '../../context';
+import Categories from './Categories';
+import Pagination from './Paginate';
 
-interface DataCarsProps {
-  cars: {
-    id: number;
-    car: string;
-    car_model: string;
-    color: string;
-    car_vin: string;
-    location: string;
-  }[];
+export interface Info {
+  count: number;
+  pages: number;
+  next: string | null;
+  prev: string | null;
 }
 
-interface CarsState {
-  results: {
-    id: number;
+export interface Data {
+  id: number;
+  name: string;
+  status: string;
+  species: string;
+  type: string;
+  gender: string;
+  origin: {
     name: string;
-    status: string;
-    species: string;
-    type: string;
-    gender: string;
-    origin: {
-      name: string;
-      url: string;
-    };
-    location: {
-      name: string;
-      url: string;
-    };
-    image: string;
-    episode: Array<string>;
     url: string;
-    created: string;
-  }[];
-  value: DataCarsProps;
-  searchTerm: string;
-  isLoaded: boolean;
-  isErr: boolean;
-  response: string;
+  };
+  location: {
+    name: string;
+    url: string;
+  };
+  image: string;
+  episode: Array<string>;
+  url: string;
+  created: string;
 }
 
-export interface CarsProps {}
+const Main = () => {
+  const [results, setResults] = useState<Data[]>([]);
+  const [info, setInfo] = useState<Info>({
+    count: 826,
+    next: 'https://rickandmortyapi.com/api/character/?page=2',
+    pages: 42,
+    prev: null,
+  });
+  const [searchTerm, setSearchTerm] = useState('');
+  const [isLoaded, setIsLoaded] = useState(false);
+  const [isErr, setIsErr] = useState(false);
+  const [categoryId, setCategoryId] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
+  const [response, setResponse] = useState('https://rickandmortyapi.com/api/character/?name=');
 
-class Main extends React.Component<CarsProps, CarsState> {
-  constructor(props: CarsProps) {
-    super(props);
-    this.state = {
-      results: [],
-      value: STATE,
-      searchTerm: '',
-      isLoaded: false,
-      isErr: false,
-      response: 'https://rickandmortyapi.com/api/character',
-    };
-    this.handleSearchTermChange = this.handleSearchTermChange.bind(this);
-    this.handleSearchDataChange = this.handleSearchDataChange.bind(this);
-  }
-
-  async componentDidMount() {
-    try {
-      const response = await axios.get(this.state.response);
-      this.setState({ results: response.data.results, isLoaded: true, isErr: false });
-    } catch (error) {
-      this.setState({ isLoaded: true, isErr: true });
+  useEffect(() => {
+    setIsLoaded(false);
+    async function componentDidMount() {
+      try {
+        const result = await axios.get(response);
+        setResults(result.data.results);
+        setInfo(result.data.info);
+        setIsLoaded(true);
+        setIsErr(false);
+      } catch (error) {
+        setIsLoaded(true);
+        setIsErr(true);
+      }
+      if (typeof localStorage.getItem('Term') === 'string') {
+        setSearchTerm(String(localStorage.getItem('Term')));
+      }
+      if (typeof localStorage.getItem('Id') === 'string') {
+        setCategoryId(String(localStorage.getItem('Id')));
+      }
+      if (typeof localStorage.getItem('Response') === 'string') {
+        setResponse(
+          `https://rickandmortyapi.com/api/character/?name=${
+            localStorage.getItem('Term') ? localStorage.getItem('Term') : ''
+          }&status=${localStorage.getItem('Id') ? localStorage.getItem('Id') : ''}&page=${
+            localStorage.getItem('Page') ? localStorage.getItem('Page') : 1
+          }`
+        );
+      }
     }
-    if (typeof localStorage.getItem('Term') === 'string') {
-      this.setState({ searchTerm: String(localStorage.getItem('Term')) });
-    }
-  }
+    componentDidMount();
+  }, [response, categoryId, currentPage]);
 
-  componentDidUpdate(prevProps: Readonly<CarsProps>, prevState: Readonly<CarsState>): void {
-    if (prevState.response !== this.state.response) {
-      this.setState({ response: this.state.response, isLoaded: false });
-      this.componentDidMount();
-    }
-  }
+  useEffect(() => {
+    setIsLoaded(false);
+  }, [response]);
 
-  handleSearchTermChange = (searchTerm: string) => {
+  const handleSearchTermChange = (searchTerm: string) => {
     localStorage.setItem('Term', searchTerm);
-    localStorage.setItem('Response', this.state.response + '/?name=' + searchTerm);
-    this.setState({ searchTerm });
+    localStorage.setItem('Response', response + searchTerm);
+    setSearchTerm(searchTerm);
   };
 
-  handleSearchDataChange = () => {
+  const handleSearchDataChange = () => {
     if (typeof localStorage.getItem('Response') === 'string') {
-      this.setState({
-        response:
-          'https://rickandmortyapi.com/api/character' + '/?name=' + localStorage.getItem('Term'),
-      });
+      setResponse(
+        'https://rickandmortyapi.com/api/character/?name=' + localStorage.getItem('Term')
+      );
+    }
+    if (localStorage.getItem('Page')) {
+      console.log(currentPage);
+      localStorage.setItem('Page', String(1));
     }
   };
 
-  render() {
-    return (
+  const onClickCategory = (id: string) => {
+    if (localStorage.getItem('Page')) {
+      localStorage.setItem('Page', String(1));
+    }
+    if (id === 'all') {
+      id = '';
+    }
+    localStorage.setItem('Response', response + id);
+    localStorage.setItem('Id', id);
+    setCategoryId(id);
+  };
+
+  const onChangePage = (number: number) => {
+    localStorage.setItem('Response', response + number);
+    localStorage.setItem('Page', String(number));
+    setCurrentPage(number);
+  };
+
+  return (
+    <ContextMain.Provider
+      value={{
+        searchTerm,
+        handleSearchTermChange,
+        handleSearchDataChange,
+      }}
+    >
       <div className="main">
-        <SearchBar
-          searchTerm={this.state.searchTerm}
-          handleSearchTermChange={this.handleSearchTermChange}
-          handleSearchDataChange={this.handleSearchDataChange}
-        />
+        <Categories value={categoryId} onClickCategory={(id) => onClickCategory(id)} />
+        <SearchBar />
         <div className="cards">
-          {!this.state.isLoaded ? (
+          {!isLoaded ? (
             <h1>
               Loading <img height={22} src="https://i.ibb.co/RpSP280/6.gif"></img>
             </h1>
           ) : (
-            (!this.state.isErr &&
-              this.state.results.map((item) => <CarCards key={item.id} item={item} />)) || (
+            (!isErr && results.map((item) => <CarCards key={item.id} item={item} />)) || (
               <h1>Not Found</h1>
             )
           )}
         </div>
+        <Pagination
+          startPage={localStorage.getItem('Page')}
+          info={info}
+          onChangePage={(number) => onChangePage(number)}
+        />
       </div>
-    );
-  }
-}
+    </ContextMain.Provider>
+  );
+};
 
 export default Main;

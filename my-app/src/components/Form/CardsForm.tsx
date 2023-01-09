@@ -2,10 +2,10 @@ import React from 'react';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
-import { CardsState } from './Forms';
+import { ArrState } from './Forms';
 
 interface CardsFormProps {
-  form: CardsState;
+  form: ArrState;
 }
 
 const CardsForm = (props: CardsFormProps) => {

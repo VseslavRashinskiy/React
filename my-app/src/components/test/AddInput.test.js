@@ -59,19 +59,19 @@ describe('Add input', () => {
     const inputLocationElement = screen.getByLabelText(/Location:/i);
     const inputVinElement = screen.getByLabelText(/Your Car VIN:/i);
     const buttonElement = screen.getByRole('button');
-    const colorElementNull = screen.queryByText(/color: red/i);
-    const locationElementNull = screen.queryByText(/location: Georgia/i);
-    const vinElementNull = screen.queryByText(/Car VIN: 12345678912345678/i);
+    const colorElementNull = screen.queryAllByText(/color: red/i);
+    const locationElementNull = screen.queryAllByText(/location: Georgia/i);
+    const vinElementNull = screen.queryAllByText(/Car VIN: 12345678912345678/i);
     fireEvent.change(inputColorElement, { target: { value: 'red' } });
     fireEvent.change(inputLocationElement, { target: { value: 'Georgia' } });
     fireEvent.change(inputVinElement, { target: { value: '12345678912345678' } });
-    expect(colorElementNull).toBeNull();
-    expect(locationElementNull).toBeNull();
-    expect(vinElementNull).toBeNull();
+    expect(colorElementNull).toHaveLength(2);
+    expect(locationElementNull).toHaveLength(2);
+    expect(vinElementNull).toHaveLength(2);
     fireEvent.click(buttonElement);
-    expect(screen.getByText(/color: red/i)).toBeInTheDocument();
-    expect(screen.getByText(/location: Georgia/i)).toBeInTheDocument();
-    expect(screen.getByText(/Car VIN: 12345678912345678/i)).toBeInTheDocument();
+    expect(screen.getAllByText(/color: red/i)).toHaveLength(3);
+    expect(screen.getAllByText(/location: Georgia/i)).toHaveLength(3);
+    expect(screen.getAllByText(/Car VIN: 12345678912345678/i)).toHaveLength(3);
   });
 
   it('should render error message when add button submit is clicked without one property', () => {
