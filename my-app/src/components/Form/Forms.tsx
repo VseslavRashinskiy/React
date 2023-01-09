@@ -1,4 +1,4 @@
-import { VIN_LENGTH } from 'components/constant/constant';
+import { VIN_LENGTH } from 'components/constant/Сonstant';
 import React from 'react';
 import STATE from '../constant/Cars';
 import CardsForm from './CardsForm';

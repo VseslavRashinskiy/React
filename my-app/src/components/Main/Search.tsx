@@ -3,6 +3,7 @@ import React from 'react';
 interface SearchBarProps {
   searchTerm: string;
   handleSearchTermChange: (searchTerm: string) => void;
+  handleSearchDataChange: () => void;
 }
 
 export const SearchBar = (props: SearchBarProps) => {
@@ -19,7 +20,12 @@ export const SearchBar = (props: SearchBarProps) => {
               value={props.searchTerm}
               onChange={(e) => props.handleSearchTermChange(e.target.value)}
             />
-            <button className="btn btn-outline-success" type="submit">
+            <button
+              data-testid="search"
+              className="btn btn-outline-success"
+              type="button"
+              onClick={() => props.handleSearchDataChange()}
+            >
               Search
             </button>
           </form>

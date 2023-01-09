@@ -1,7 +1,7 @@
 import { AboutUs } from 'components/AboutUs/AboutUs';
 import { Header } from 'components/Main/Header';
 import Forms from 'components/Form/Forms';
-import Main from 'components/Main/Home';
+import Main from 'components/Main/Main';
 import NotFound from 'components/NotFound';
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';

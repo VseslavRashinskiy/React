@@ -1,6 +1,6 @@
 import React from 'react';
 import { fireEvent, render, screen } from '@testing-library/react';
-import Forms from './Forms';
+import Forms from '../Form/Forms';
 import '@testing-library/jest-dom';
 
 describe('Add input', () => {
