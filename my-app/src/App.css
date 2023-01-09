@@ -105,6 +105,11 @@ label{
   color: #fff;
 }
 
+.root{
+  display: flex;
+  justify-content: center;
+}
+
 .root li a{
   text-align: center;
   width: 45px;

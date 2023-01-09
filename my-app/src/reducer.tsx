@@ -16,7 +16,6 @@ interface Action {
 }
 
 export default function reducer(state: ArrState[], action: Action) {
-  console.log(state, action);
   switch (action.type) {
     case ActionKind.INCREASE:
       return [
