@@ -1,4 +1,4 @@
-import { VIN_LENGTH } from 'components/constant/Constant';
+import { VIN_LENGTH } from 'components/constant/constant';
 import React, { useEffect, useReducer, useState } from 'react';
 import STATE from '../constant/Cars';
 import CardsForm from './CardsForm';

@@ -1,6 +1,5 @@
 import React from 'react';
 import Card from '@mui/material/Card';
-import Box from '@mui/material/Box';
 import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
 import Typography from '@mui/material/Typography';
@@ -29,7 +28,7 @@ interface CardCarsProps {
   };
 }
 
-const CarCards = (props: CardCarsProps) => {
+const SingleCards = (props: CardCarsProps) => {
   return (
     <div className="cards" data-testid="cards">
       <Card sx={{ maxWidth: 400 }}>
@@ -41,6 +40,9 @@ const CarCards = (props: CardCarsProps) => {
             <Typography gutterBottom variant="h5" component="div">
               {props.item.name}
             </Typography>
+            <Typography gutterBottom variant="h5" component="div">
+              {props.item.status}
+            </Typography>
           </CardContent>
         </CardActionArea>
       </Card>
@@ -48,4 +50,4 @@ const CarCards = (props: CardCarsProps) => {
   );
 };
 
-export default CarCards;
+export default SingleCards;
