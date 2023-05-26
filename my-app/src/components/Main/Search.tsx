@@ -1,8 +1,12 @@
-import { ContextMain } from 'context';
-import React, { useContext } from 'react';
+import React from 'react';
 
-export const SearchBar = () => {
-  const { searchTerm, handleSearchTermChange, handleSearchDataChange } = useContext(ContextMain);
+interface SearchBarProps {
+  searchTerm: string;
+  handleSearchTermChange: (searchTerm: string) => void;
+  handleSearchDataChange: () => void;
+}
+
+export const SearchBar = (props: SearchBarProps) => {
   return (
     <div className="search">
       <nav className="navbar bg-light">
@@ -13,14 +17,14 @@ export const SearchBar = () => {
               type="text"
               placeholder="Search"
               aria-label="Search"
-              value={searchTerm}
-              onChange={(e) => handleSearchTermChange(e.target.value)}
+              value={props.searchTerm}
+              onChange={(e) => props.handleSearchTermChange(e.target.value)}
             />
             <button
               data-testid="search"
               className="btn btn-outline-success"
               type="button"
-              onClick={() => handleSearchDataChange()}
+              onClick={() => props.handleSearchDataChange()}
             >
               Search
             </button>

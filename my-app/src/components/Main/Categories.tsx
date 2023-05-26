@@ -1,9 +1,8 @@
 import React from 'react';
 
 const Categories: React.FunctionComponent<{
-  value: string;
   onClickCategory: (i: string) => void;
-}> = ({ value, onClickCategory }) => {
+}> = ({ onClickCategory }) => {
   const categories = ['all', 'alive', 'dead', 'unknown'];
   return (
     <div className="categories">
@@ -12,7 +11,7 @@ const Categories: React.FunctionComponent<{
           <li
             key={i}
             onClick={() => onClickCategory(categories[i])}
-            className={value === categories[i] ? 'active' : ''}
+            className={categories[i] ? 'active' : ''}
           >
             {categoryName}
           </li>
