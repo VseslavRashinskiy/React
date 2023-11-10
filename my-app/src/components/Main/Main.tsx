@@ -1,122 +1,111 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { SearchBar } from './Search';
-import STATE from '../constant/Cars';
-import CarCards from './CarsCard';
-import axios from 'axios';
+import SingleCards from './SingleCard';
+import Categories from './Categories';
+import Pagination from './Paginate';
+import {
+  fetchData,
+  fetchHandleSearchDataChange,
+  fetchOnChangePage,
+  fetchOnClickCategory,
+} from 'store/todoSlice';
+import { useAppDispatch, useAppSelector } from '../../hooks';
 
-interface DataCarsProps {
-  cars: {
-    id: number;
-    car: string;
-    car_model: string;
-    color: string;
-    car_vin: string;
-    location: string;
-  }[];
+export interface Info {
+  count: number;
+  pages: number;
+  next: string | null;
+  prev: string | null;
 }
 
-interface CarsState {
-  results: {
-    id: number;
+export interface Data {
+  id: number;
+  name: string;
+  status: string;
+  species: string;
+  type: string;
+  gender: string;
+  origin: {
     name: string;
-    status: string;
-    species: string;
-    type: string;
-    gender: string;
-    origin: {
-      name: string;
-      url: string;
-    };
-    location: {
-      name: string;
-      url: string;
-    };
-    image: string;
-    episode: Array<string>;
     url: string;
-    created: string;
-  }[];
-  value: DataCarsProps;
-  searchTerm: string;
-  isLoaded: boolean;
-  isErr: boolean;
-  response: string;
+  };
+  location: {
+    name: string;
+    url: string;
+  };
+  image: string;
+  episode: Array<string>;
+  url: string;
+  created: string;
 }
 
-export interface CarsProps {}
+const Main = () => {
+  const todos = useAppSelector((state) => state.todos);
+  const [searchTerm, setSearchTerm] = useState('');
+  const dispatch = useAppDispatch();
 
-class Main extends React.Component<CarsProps, CarsState> {
-  constructor(props: CarsProps) {
-    super(props);
-    this.state = {
-      results: [],
-      value: STATE,
-      searchTerm: '',
-      isLoaded: false,
-      isErr: false,
-      response: 'https://rickandmortyapi.com/api/character',
-    };
-    this.handleSearchTermChange = this.handleSearchTermChange.bind(this);
-    this.handleSearchDataChange = this.handleSearchDataChange.bind(this);
-  }
+  useEffect(() => {
+    dispatch(fetchData());
+  }, [dispatch]);
 
-  async componentDidMount() {
-    try {
-      const response = await axios.get(this.state.response);
-      this.setState({ results: response.data.results, isLoaded: true, isErr: false });
-    } catch (error) {
-      this.setState({ isLoaded: true, isErr: true });
-    }
-    if (typeof localStorage.getItem('Term') === 'string') {
-      this.setState({ searchTerm: String(localStorage.getItem('Term')) });
-    }
-  }
-
-  componentDidUpdate(prevProps: Readonly<CarsProps>, prevState: Readonly<CarsState>): void {
-    if (prevState.response !== this.state.response) {
-      this.setState({ response: this.state.response, isLoaded: false });
-      this.componentDidMount();
-    }
-  }
-
-  handleSearchTermChange = (searchTerm: string) => {
+  const handleSearchTermChange = (searchTerm: string) => {
     localStorage.setItem('Term', searchTerm);
-    localStorage.setItem('Response', this.state.response + '/?name=' + searchTerm);
-    this.setState({ searchTerm });
+    localStorage.setItem('Response', todos.response + searchTerm);
+    setSearchTerm(searchTerm);
   };
 
-  handleSearchDataChange = () => {
-    if (typeof localStorage.getItem('Response') === 'string') {
-      this.setState({
-        response:
-          'https://rickandmortyapi.com/api/character' + '/?name=' + localStorage.getItem('Term'),
-      });
+  const handleSearchDataChange = () => {
+    if (localStorage.getItem('Page')) {
+      localStorage.setItem('Page', String(1));
     }
+    dispatch(fetchHandleSearchDataChange(searchTerm));
   };
 
-  render() {
-    return (
-      <div className="main">
-        <SearchBar
-          searchTerm={this.state.searchTerm}
-          handleSearchTermChange={this.handleSearchTermChange}
-          handleSearchDataChange={this.handleSearchDataChange}
-        />
-        <div className="cards">
-          {!this.state.isLoaded ? (
-            <h1>
-              Loading <img height={22} src="https://i.ibb.co/RpSP280/6.gif"></img>
-            </h1>
-          ) : (
-            (!this.state.isErr &&
-              this.state.results.map((item) => <CarCards key={item.id} item={item} />)) || (
-              <h1>Not Found</h1>
-            )
-          )}
-        </div>
+  const onClickCategory = (id: string) => {
+    if (localStorage.getItem('Page')) {
+      localStorage.setItem('Page', String(1));
+    }
+    if (id === 'all') {
+      id = '';
+    }
+    localStorage.setItem('Response', todos.response + id);
+    localStorage.setItem('Id', id);
+    dispatch(fetchOnClickCategory(id));
+  };
+
+  const onChangePage = (currentPage: number) => {
+    localStorage.setItem('Response', todos.response + currentPage);
+    localStorage.setItem('Page', String(currentPage));
+    dispatch(fetchOnChangePage(currentPage));
+  };
+
+  return (
+    <div className="main">
+      <Categories onClickCategory={(id) => onClickCategory(id)} />
+      <SearchBar
+        searchTerm={searchTerm}
+        handleSearchTermChange={handleSearchTermChange}
+        handleSearchDataChange={handleSearchDataChange}
+      />
+      <div className="cards">
+        {todos.loading ? (
+          <h1>
+            Loading <img height={22} src="https://i.ibb.co/RpSP280/6.gif"></img>
+          </h1>
+        ) : (
+          (todos.error &&
+            todos.results.results.map((item) => <SingleCards key={item.id} item={item} />)) || (
+            <h1>Not Found</h1>
+          )
+        )}
       </div>
-    );
-  }
-}
+      <Pagination
+        startPage={localStorage.getItem('Page')}
+        info={todos.results.info}
+        onChangePage={(number) => onChangePage(number)}
+      />
+    </div>
+  );
+};
 
 export default Main;
